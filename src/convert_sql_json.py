@@ -21,6 +21,7 @@ j = json.dumps(rowarray_list)
 
 # Convert query to objects of key-value pairs
 objects_list = []
+count = 0
 for row in rows:
     d = collections.OrderedDict()
     d["reviewid"] = row[0]
@@ -33,10 +34,14 @@ for row in rows:
     d["author_type"] = row[7]
     d["author_date"] = row[8]
     objects_list.append(d)
+    count += 1
+    if(count == 50):
+        break
+
 
 
 j = json.dumps(objects_list)
-with open("../assets/reviews.json", "w") as f:
+with open("../assets/mini_reviews.json", "w") as f:
     f.write(j)
 
 # Be sure to close the connection
