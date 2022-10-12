@@ -1,14 +1,14 @@
 # Makefile
 
-all: refine
+#all: refine
 
 # Notes: after adding 'data_visualization.py', 
 # uncomment the lines below and remove the first line of code 'all: refine'
 
-# all: visualize
+all: visualize
 
-# visualize: refine
-# 	./venv/bin/python3 scripts/data_visualization.py
+visualize: refine
+ 	jupyter notebook scripts/data_visualization.ipynb
 
 refine: merge
 	./venv/bin/python3 scripts/data_cleaning.py
