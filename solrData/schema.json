@@ -1,24 +1,57 @@
 {
 	"add-field-type": [
         {
-            "name":"songTitle",
+            "name":"titles",
             "class":"solr.TextField",
             "indexAnalyzer":{
                 "tokenizer":{
-                    "class":"solr.StandardTokenizerFactory"
+                    "class":"solr.ClassicTokenizerFactory"
                 },
                 "filters":[
                     {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
-                    {"class":"solr.LowerCaseFilterFactory"}
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.StandardTokenizerFactory"}
                 ]
             },
             "queryAnalyzer":{
                 "tokenizer":{
-                    "class":"solr.StandardTokenizerFactory"
+                    "class":"solr.ClassicTokenizerFactory"
                 },
                 "filters":[
                     {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
-                    {"class":"solr.LowerCaseFilterFactory"}
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.StandardTokenizerFactory"}
+                    
+                ]
+            }
+        },
+        {
+            "name":"free_text",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"}
+                ]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"}
                 ]
             }
         }
@@ -26,12 +59,43 @@
     "add-field": [
         {
             "name": "title",
-            "type": "songTitle",
+            "type": "titles",
             "indexed": true
         },
         {
             "name": "artist",
-            "type": "songTitle",
+            "type": "titles",
+            "indexed": true
+        },
+        {
+            "name": "author",
+            "type": "titles",
+            "indexed": true
+        }
+        ,
+        {
+            "name": "review_content",
+            "type": "free_text",
+            "indexed": true
+        },
+        {
+            "name": "score",
+            "type": "titles",
+            "indexed": true
+        },
+        {
+            "name": "song_release_year",
+            "type": "titles",
+            "indexed": true
+        },
+        {
+            "name": "genre",
+            "type": "titles",
+            "indexed": true
+        },
+        {
+            "name": "record_label",
+            "type": "titles",
             "indexed": true
         }
     ]
