@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 import numpy as np
 
-conn = sqlite3.connect("../assets/database.sqlite")
+conn = sqlite3.connect("../../assets/database.sqlite")
 reviews = pd.read_sql('SELECT * FROM reviews;', conn)
 
 cursor = conn.cursor()

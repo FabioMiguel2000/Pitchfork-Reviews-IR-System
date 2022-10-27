@@ -1,0 +1,39 @@
+{
+	"add-field-type": [
+        {
+            "name":"songTitle",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.StandardTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"}
+                ]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.StandardTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"}
+                ]
+            }
+        }
+    ],
+    "add-field": [
+        {
+            "name": "title",
+            "type": "songTitle",
+            "indexed": true
+        },
+        {
+            "name": "artist",
+            "type": "songTitle",
+            "indexed": true
+        }
+    ]
+}
+
