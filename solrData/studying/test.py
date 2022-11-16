@@ -14,6 +14,7 @@ QUERY_URL = 'http://localhost:8982/solr/reviews/select?fl=score%20*&fq=rating_sc
 
 # Read qrels to extract relevant documents
 relevant = list(map(lambda el: [int(el.strip())], open(QRELS_FILE).readlines()))
+print(relevant)
 # Get query results from Solr instance
 results = requests.get(QUERY_URL).json()['response']['docs']
 

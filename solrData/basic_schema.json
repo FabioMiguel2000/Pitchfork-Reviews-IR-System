@@ -17,12 +17,6 @@
             }
         }
     ],
-    "add-field": [
-        {
-            "name": "song_release_year",
-            "type": "titles",
-            "indexed": true
-        }
-    ]
+    "add-field": []
 }
 
