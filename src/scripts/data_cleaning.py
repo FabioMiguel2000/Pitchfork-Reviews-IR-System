@@ -12,4 +12,6 @@ df['review_publication_date'] = pd.to_datetime(df['review_publication_date'], fo
 
 df.loc[df['review_content'] != ''] 
 
+df['song_release_year'] = df['song_release_year'].replace('None', '0')
+
 data = df.to_json('clean_reviews.json', orient='records')
