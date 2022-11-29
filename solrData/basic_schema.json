@@ -1,0 +1,22 @@
+{
+	"add-field-type": [
+        {
+            "name":"titles",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[]
+            }
+        }
+    ],
+    "add-field": []
+}
+

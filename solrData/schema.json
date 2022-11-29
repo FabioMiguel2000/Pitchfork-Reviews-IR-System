@@ -1,7 +1,7 @@
 {
 	"add-field-type": [
         {
-            "name":"titles",
+            "name":"standard_text",
             "class":"solr.TextField",
             "indexAnalyzer":{
                 "tokenizer":{
@@ -10,7 +10,6 @@
                 "filters":[
                     {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
                     {"class":"solr.LowerCaseFilterFactory"}
-                    
                 ]
             },
             "queryAnalyzer":{
@@ -20,7 +19,6 @@
                 "filters":[
                     {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
                     {"class":"solr.LowerCaseFilterFactory"}
-                    
                 ]
             }
         },
@@ -63,12 +61,12 @@
         },
         {
             "name": "artist",
-            "type": "titles",
+            "type": "standard_text",
             "indexed": true
         },
         {
             "name": "author",
-            "type": "free_text",
+            "type": "standard_text",
             "indexed": true
         }
         ,
@@ -78,25 +76,26 @@
             "indexed": true
         },
         {
-            "name": "score",
-            "type": "titles",
-            "indexed": true
-        },
-        {
             "name": "song_release_year",
-            "type": "titles",
+            "type": "standard_text",
             "indexed": true
         },
         {
             "name": "genre",
-            "type": "titles",
+            "type": "standard_text",
             "indexed": true
         },
         {
             "name": "record_label",
-            "type": "titles",
+            "type": "standard_text",
             "indexed": true
+        },
+        {
+            "name": "reviewid",
+            "type": "string",
+            "indexed": false
         }
+
     ]
 }
 
