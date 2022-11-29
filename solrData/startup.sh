@@ -6,12 +6,12 @@ precreate-core reviews
 solr start
 
 # Schema definition via API
-curl -X POST -H 'Content-type:application/json' \
-    --data-binary @/data/schema.json \
-    http://localhost:8983/solr/reviews/schema
+#curl -X POST -H 'Content-type:application/json' \
+#    --data-binary @/data/schema.json \
+#    http://localhost:8983/solr/reviews/schema
 
 # Populate collection
-bin/post -c reviews /data/clean_reviews.json
+#bin/post -c reviews /data/clean_reviews.json
 
 # Restart in foreground mode so we can access the interface
 solr restart -f

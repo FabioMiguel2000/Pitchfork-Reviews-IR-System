@@ -1,0 +1,21 @@
+(review_content:boring^4 OR
+-title:boring) AND
+author:mar?^2
+
+
+review_content:boring^5
+-title:boring
+-review_content:"doesn't boring"~5
+-review_content:"not boring"~5
+-review_content:"never boring"~5
+review_content:"is boring"~5
+review_content:"are boring"~5
+
+LAST:
+review_content:boring^5
+-title:boring
+-review_content:"doesn't boring"~5
+-review_content:"not boring"~5
+-review_content:"never boring"~5
+review_content:"is boring"~5
+-review_content:" "(\")" boring "(\")" "~3^2

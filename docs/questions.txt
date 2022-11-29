@@ -1,0 +1,25 @@
+10 questions
+
+
+T: reviews about albums that include jazz and piano
+
+L: reviews about albums that are boring.
+
+L: Reviews that talk about albums that are futuristic in rock (in review content)
+
+T: find songs of krallice that are ... (from content)
+
+
+F: I want to find a review about the-dream that shows his musical talent.
+
+F: I want to find exciting/thrilling albums that have positive reviews
+
+F: I want songs that help me study
+
+T: I want to find the reviews that talk about the past of my favorite artist ....
+
+L: I want to know which songs rebecca haithcoat thinks are bad. (vulgair, bland)
+
+
+
+

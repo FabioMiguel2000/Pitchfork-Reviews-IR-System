@@ -9,8 +9,8 @@
                 },
                 "filters":[
                     {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
-                    {"class":"solr.LowerCaseFilterFactory"},
-                    {"class":"solr.StandardTokenizerFactory"}
+                    {"class":"solr.LowerCaseFilterFactory"}
+                    
                 ]
             },
             "queryAnalyzer":{
@@ -19,8 +19,7 @@
                 },
                 "filters":[
                     {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
-                    {"class":"solr.LowerCaseFilterFactory"},
-                    {"class":"solr.StandardTokenizerFactory"}
+                    {"class":"solr.LowerCaseFilterFactory"}
                     
                 ]
             }
@@ -59,7 +58,7 @@
     "add-field": [
         {
             "name": "title",
-            "type": "titles",
+            "type": "free_text",
             "indexed": true
         },
         {
@@ -69,7 +68,7 @@
         },
         {
             "name": "author",
-            "type": "titles",
+            "type": "free_text",
             "indexed": true
         }
         ,
