@@ -1,0 +1,4 @@
+do improvements all seperate
+test all hypothesis separate
+
+in the end join everything

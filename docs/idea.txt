@@ -1,0 +1,2 @@
+idea:
+remove all persons etc from review_content
