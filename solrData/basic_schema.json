@@ -15,8 +15,18 @@
                 },
                 "filters":[]
             }
+        },
+        {
+            "name":"float",
+            "class":"solr.FloatPointField"
         }
     ],
-    "add-field": []
+    "add-field": [
+        {
+            "name": "score",
+            "type": "float",
+            "indexed": true
+        }
+    ]
 }
 

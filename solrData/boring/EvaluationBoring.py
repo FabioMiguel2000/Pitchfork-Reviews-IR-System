@@ -6,15 +6,8 @@ import json
 import requests
 import pandas as pd
 
-QRELS_FILE = "OnlyKeywords.txt"
-QUERY_URL = 'http://localhost:8983/solr/reviews/select?q=review_content:boring%5E5%0A-title:boring%0A-review_content:"doesn\'t%20boring"~5%0A-review_content:"not%20boring"~5%0A-review_content:"never%20boring"~5%0Areview_content:"is%20boring"~5%0A-review_content:"%20"(%5C")"%20boring%20"(%5C")"%20"~3%5E2%0Akeywords:boring%5E10&q.op=OR&defType=edismax&rows=25&wt=json'
 
-# Read qrels to extract relevant documents
-relevant = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
-# Get query results from Solr instance
-results = requests.get(QUERY_URL).json()['response']['docs']
 
-print(len(results))
 
 
 # METRICS TABLE
@@ -23,51 +16,73 @@ metrics = {}
 metric = lambda f: metrics.setdefault(f.__name__, f)
 
 @metric
-def ap(results, relevant):
+def ap(results, relevant, basic):
     """Average Precision"""
-    precision_values = [
-        len([
-            doc 
-            for doc in results[:idx]
-            if str(doc['reviewid'][0]) in relevant
-        ]) / idx 
-        for idx in range(1, len(results))
-    ]
+    if not basic:
+        precision_values = [
+            len([
+                doc 
+                for doc in results[:idx]
+                if str(doc['reviewid']) in relevant
+            ]) / idx 
+            for idx in range(1, len(results))
+        ]
+    else:
+        precision_values = [
+            len([
+                doc 
+                for doc in results[:idx]
+                if str(doc['reviewid'][0]) in relevant
+            ]) / idx 
+            for idx in range(1, len(results))
+        ]
     return sum(precision_values)/len(precision_values)
 
 
 @metric
-def p10(results, relevant, n=10):
+def p10(results, relevant, basic, n=10):
     """Precision at N"""
+    if not basic:
+        return len([doc for doc in results[:n] if str(doc['reviewid']) in relevant])/n
     return len([doc for doc in results[:n] if str(doc['reviewid'][0]) in relevant])/n
 
 @metric
-def p20(results, relevant, n=20):
+def p20(results, relevant, basic, n=20):
     """Precision at N"""
+    if not basic:
+        return len([doc for doc in results[:n] if str(doc['reviewid']) in relevant])/n
     return len([doc for doc in results[:n] if str(doc['reviewid'][0]) in relevant])/n
 
 @metric
-def p05(results, relevant, n=5):
+def p05(results, relevant,basic,  n=5):
     """Precision at N"""
+    if not basic:
+        return len([doc for doc in results[:n] if str(doc['reviewid']) in relevant])/n
     return len([doc for doc in results[:n] if str(doc['reviewid'][0]) in relevant])/n
 
 @metric
-def p25(results, relevant, n=25):
+def p25(results, relevant, basic, n=25):
     """Precision at N"""
+    if not basic:
+        return len([doc for doc in results[:n] if str(doc['reviewid']) in relevant])/n
     return len([doc for doc in results[:n] if str(doc['reviewid'][0]) in relevant])/n
 
 @metric
-def p15(results, relevant, n=15):
+def p15(results, relevant, basic, n=15):
     """Precision at N"""
+    if not basic:
+        return len([doc for doc in results[:n] if str(doc['reviewid']) in relevant])/n
     return len([doc for doc in results[:n] if str(doc['reviewid'][0]) in relevant])/n
 
 @metric
-def recall(results, relevant):
+def recall(results, relevant, basic):
     """Precision at N"""
+    if not basic:
+        return len([doc for doc in results if str(doc['reviewid']) in relevant])/len(relevant)
     return len([doc for doc in results if str(doc['reviewid'][0]) in relevant])/len(relevant)
 
-def calculate_metric(key, results, relevant):
-    return metrics[key](results, relevant)
+def calculate_metric(key, results, relevant, basic):
+    return metrics[key](results, relevant, basic)
 
 # Define metrics to be calculated
 evaluation_metrics = {
@@ -81,51 +96,137 @@ evaluation_metrics = {
 }
 
 # Calculate all metrics and export results as LaTeX table
-df = pd.DataFrame([['Metric','Value']] +
-    [
-        [evaluation_metrics[m], calculate_metric(m, results, relevant)]
-        for m in evaluation_metrics
-    ]
-)
+def calculate_metrics_all(results, relevant, name, basic):
+    df = pd.DataFrame([['Metric','Value']] +
+        [
+            [evaluation_metrics[m], calculate_metric(m, results, relevant, basic)]
+            for m in evaluation_metrics
+        ]
+    )
 
-with open('results.tex','w') as tf:
-    tf.write(df.to_latex())
+    with open(name,'w') as tf: #results.tex
+        tf.write(df.to_latex())
 
 # PRECISION-RECALL CURVE
 # Calculate precision and recall values as we move down the ranked list
-precision_values = [
-    len([
-        doc 
-        for doc in results[:idx]
-        if str(doc['reviewid'][0]) in relevant
-    ]) / idx 
-    for idx, _ in enumerate(results, start=1)
-]
+def precision_recall_curve(results, relevant, basic):
+    if not basic:
+        precision_values = [
+            len([
+                doc 
+                for doc in results[:idx]
+                if str(doc['reviewid']) in relevant
+            ]) / idx 
+            for idx, _ in enumerate(results, start=1)
+        ]
 
-recall_values = [
-    len([
-        doc for doc in results[:idx]
-        if str(doc['reviewid'][0]) in relevant
-    ]) / len(relevant)
-    for idx, _ in enumerate(results, start=1)
-]
-precision_recall_match = {k: v for k,v in zip(recall_values, precision_values)}
+        recall_values = [
+            len([
+                doc for doc in results[:idx]
+                if str(doc['reviewid']) in relevant
+            ]) / len(relevant)
+            for idx, _ in enumerate(results, start=1)
+        ]
+    else:
+        precision_values = [
+            len([
+                doc 
+                for doc in results[:idx]
+                if str(doc['reviewid'][0]) in relevant
+            ]) / idx 
+            for idx, _ in enumerate(results, start=1)
+        ]
 
-# Extend recall_values to include traditional steps for a bett
-# er curve (0.1, 0.2 ...)
-recall_values.extend([step for step in np.arange(0.1, 1.1, 0.01) if step not in recall_values])
-recall_values = sorted(set(recall_values))
-# Extend matching dict to include these new intermediate steps
-for idx, step in enumerate(recall_values):
-    if step not in precision_recall_match:
-        if recall_values[idx-1] in precision_recall_match:
-            precision_recall_match[step] = precision_recall_match[recall_values[idx-1]]
-        else:
-            precision_recall_match[step] = precision_recall_match[recall_values[idx+1]]
+        recall_values = [
+            len([
+                doc for doc in results[:idx]
+                if str(doc['reviewid'][0]) in relevant
+            ]) / len(relevant)
+            for idx, _ in enumerate(results, start=1)
+        ]
+    precision_recall_match = {k: v for k,v in zip(recall_values, precision_values)}
+
+    # Extend recall_values to include traditional steps for a bett
+    # er curve (0.1, 0.2 ...)
+    recall_values.extend([step for step in np.arange(0.1, 1.1, 0.001) if step not in recall_values])
+    recall_values = sorted(set(recall_values))
+    # Extend matching dict to include these new intermediate steps
+    for idx, step in enumerate(recall_values):
+        if step not in precision_recall_match:
+            if recall_values[idx-1] in precision_recall_match:
+                precision_recall_match[step] = precision_recall_match[recall_values[idx-1]]
+            else:
+                precision_recall_match[step] = precision_recall_match[recall_values[idx+1]]
+
+    y = [precision_recall_match.get(r) for r in recall_values]
+    return recall_values, y
+
+QRELS_FILE = "relevantBasicOrigD.txt"
+QUERY_URL = 'http://localhost:8983/solr/reviews/select?q=boring&q.op=AND&defType=edismax&indent=true&rows=25&qf=review_content%5E1%20keywords%5E1'
+
+# Read qrels to extract relevant documents
+relevantBasicOrigD = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
+# Get query results from Solr instance
+resultsBasicOrigD = requests.get(QUERY_URL).json()['response']['docs']
+
+QRELS_FILE = "relevantExtendedOrigD.txt"
+QUERY_URL = 'http://localhost:8984/solr/reviews/select?q=boring&q.op=AND&defType=edismax&indent=true&rows=25&qf=review_content%5E2%20keywords%5E5&boost=sum(1,%20div(abs(sum(-10,%20score)),10))'
+
+# Read qrels to extract relevant documents
+relevantExOrigD = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
+# Get query results from Solr instance
+resultsExOrigD = requests.get(QUERY_URL).json()['response']['docs']
+
+QRELS_FILE = "relevantExtendedOrigC.txt"
+QUERY_URL = 'http://localhost:8986/solr/reviews/select?q=boring&q.op=AND&defType=edismax&indent=true&rows=25&qf=review_content%5E2%20keywords%5E5&boost=sum(1,%20div(abs(sum(-10,%20score)),10))'
+
+# Read qrels to extract relevant documents
+relevantExOrigC = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
+# Get query results from Solr instance
+resultsExOrigC = requests.get(QUERY_URL).json()['response']['docs']
+
+QRELS_FILE = "relevantExtendedEmpty.txt"
+QUERY_URL = 'http://localhost:8987/solr/reviews/select?q=boring&q.op=AND&defType=edismax&indent=true&rows=25&qf=review_content%5E2%20keywords%5E5&boost=sum(1,%20div(abs(sum(-10,%20score)),10))'
+
+# Read qrels to extract relevant documents
+relevantExEmpty = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
+# Get query results from Solr instance
+resultsExEmpty = requests.get(QUERY_URL).json()['response']['docs']
+
+QRELS_FILE = "relevantExtendedClean.txt"
+QUERY_URL = 'http://localhost:8988/solr/reviews/select?q=boring&q.op=AND&defType=edismax&indent=true&rows=25&qf=review_content%5E2%20keywords%5E5&boost=sum(1,%20div(abs(sum(-10,%20score)),10))'
+
+# Read qrels to extract relevant documents
+relevantExClean = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
+# Get query results from Solr instance
+resultsExClean = requests.get(QUERY_URL).json()['response']['docs']
 
 
-disp = PrecisionRecallDisplay([precision_recall_match.get(r) for r in recall_values], recall_values)
-disp.plot()
-plt.savefig('precision_recall.png')
+
+calculate_metrics_all(resultsBasicOrigD, relevantBasicOrigD, 'resultsBasicOrigD.txt', True)
+calculate_metrics_all(resultsExOrigD, relevantExOrigD, 'resultsExtendedOrigD.txt', False)
+calculate_metrics_all(resultsExOrigC, relevantExOrigC, 'resultsExtendedOrigC.txt', False)
+calculate_metrics_all(resultsExEmpty, relevantExEmpty, 'resultsExtendedEmpty.txt', False)
+calculate_metrics_all(resultsExClean, relevantExClean, 'resultsExtendedClean.txt', False)
+
+recall_valuesBasicOrigD, yBasicOrigD = precision_recall_curve(resultsBasicOrigD, relevantBasicOrigD, True)
+recall_valuesExOrigD, yExOrigD = precision_recall_curve(resultsExOrigD, relevantExOrigD, False)
+recall_valuesExOrigC, yExOrigC = precision_recall_curve(resultsExOrigC, relevantExOrigC, False)
+recall_valuesExEmpty, yExEmpty = precision_recall_curve(resultsExEmpty, relevantExEmpty, False)
+recall_valuesExClean, yExClean = precision_recall_curve(resultsExClean, relevantExClean, False)
+
+plt.plot(recall_valuesBasicOrigD, yBasicOrigD, label="Basic schema, original content, no keywords")
+plt.plot(recall_valuesExOrigD, yExOrigD, label="Extended schema, original content, no keywords")
+plt.plot(recall_valuesExOrigC, yExOrigC, label="Extended schema, original content, with keywords")
+plt.plot(recall_valuesExEmpty, yExEmpty, label="Extended schema, empty content, with keywords")
+plt.plot(recall_valuesExClean, yExClean, label="Extended schema, clean content, with keywords")
+#plt.plot(recall_values_With, yWith, label="With Schema", color = 'forestgreen')
+
+plt.xlabel("Recall")
+plt.ylabel("Precision")
+
+plt.legend()
+
+plt.savefig('BoringplotTogether.png')
 
 

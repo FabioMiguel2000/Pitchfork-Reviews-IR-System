@@ -1,0 +1,221 @@
+{
+	"add-field-type": [
+        {
+            "name":"standard_text",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.TrimFilterFactory"}
+                ]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.TrimFilterFactory"}
+                ]
+            }
+        },
+        {
+            "name":"single_words",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.KeywordTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"},
+                    {"class":"solr.TrimFilterFactory"}
+                ]
+                
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.KeywordTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"},
+                    {"class":"solr.TrimFilterFactory"}
+
+                ]
+                
+            }
+        },
+        {
+            "name":"free_text",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"},
+                    {"class":"solr.TrimFilterFactory"},
+                    {"class":"solr.StopFilterFactory", "words":"stopwords.txt", "ignoreCase":"true"}
+                ]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"},
+                    {"class":"solr.TrimFilterFactory"},
+                    {"class":"solr.StopFilterFactory", "words":"stopwords.txt", "ignoreCase":"true"}
+                ]
+            }
+        },
+        {
+            "name":"float",
+            "class":"solr.FloatPointField"
+        }
+        ,
+        {
+            "name":"int",
+            "class":"solr.IntPointField"
+        }
+    ],
+    "add-field": [
+        {
+            "name": "title",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "artist",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "author",
+            "type": "standard_text",
+            "indexed": true
+        }
+        ,
+        {
+            "name": "review_content",
+            "type": "free_text",
+            "indexed": true
+        },
+        {
+            "name": "song_release_year",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "genre",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "record_label",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "reviewid",
+            "type": "string",
+            "indexed": false
+        },
+        {
+            "name": "keywords",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "organizations",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "places",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "persons",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "facilities",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "law",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "work_of_art",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "events",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "products",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "norp",
+            "type": "single_words",
+            "multiValued":true,
+            "indexed": true
+        },
+        {
+            "name": "score",
+            "type": "float",
+            "indexed": true
+        }
+        ,
+        {
+            "name": "number_of_entities",
+            "type": "int",
+            "indexed": true
+        }
+
+    ]
+}
+

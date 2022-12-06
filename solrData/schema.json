@@ -21,7 +21,7 @@
                     {"class":"solr.LowerCaseFilterFactory"}
                 ]
             }
-        },
+        },        
         {
             "name":"free_text",
             "class":"solr.TextField",
@@ -94,6 +94,11 @@
             "name": "reviewid",
             "type": "string",
             "indexed": false
+        },
+        {
+            "name": "keywords",
+            "type": "free_text",
+            "indexed": true
         }
 
     ]
