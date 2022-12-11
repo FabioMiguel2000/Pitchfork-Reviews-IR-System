@@ -1,0 +1,14 @@
+\begin{tabular}{lll}
+\toprule
+{} &                       0 &         1 \\
+\midrule
+0 &                  Metric &     Value \\
+1 &       Average Precision &  0.746589 \\
+2 &   Precision at 5 (P@05) &       1.0 \\
+3 &  Precision at 10 (P@10) &       0.9 \\
+4 &  Precision at 15 (P@15) &       0.6 \\
+5 &  Precision at 20 (P@20) &       0.5 \\
+6 &  Precision at 25 (P@25) &       0.4 \\
+7 &                  Recall &   0.47619 \\
+\bottomrule
+\end{tabular}
