@@ -1,0 +1,102 @@
+{
+	"add-field-type": [
+        {
+            "name":"standard_text",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"}
+                ]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"}
+                ]
+            }
+        },
+        {
+            "name":"free_text",
+            "class":"solr.TextField",
+            "indexAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.SynonymGraphFilterFactory", "synonyms": "/var/solr/data/reviews/synonyms.txt"},
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"}
+                ]
+            },
+            "queryAnalyzer":{
+                "tokenizer":{
+                    "class":"solr.ClassicTokenizerFactory"
+                },
+                "filters":[
+                    {"class":"solr.ASCIIFoldingFilterFactory", "preserveOriginal":true},
+                    {"class":"solr.LowerCaseFilterFactory"},
+                    {"class":"solr.EnglishMinimalStemFilterFactory"},
+                    {"class":"solr.EnglishPossessiveFilterFactory"},
+                    {"class":"solr.HyphenatedWordsFilterFactory"},
+                    {"class":"solr.KStemFilterFactory"}
+                ]
+            }
+        }
+    ],
+    "add-field": [
+        {
+            "name": "title",
+            "type": "free_text",
+            "indexed": true
+        },
+        {
+            "name": "artist",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "author",
+            "type": "standard_text",
+            "indexed": true
+        }
+        ,
+        {
+            "name": "review_content",
+            "type": "free_text",
+            "indexed": true
+        },
+        {
+            "name": "song_release_year",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "genre",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "record_label",
+            "type": "standard_text",
+            "indexed": true
+        },
+        {
+            "name": "reviewid",
+            "type": "string",
+            "indexed": false
+        }
+
+    ]
+}
+
