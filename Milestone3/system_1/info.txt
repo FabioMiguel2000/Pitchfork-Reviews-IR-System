@@ -1,0 +1,3 @@
+Schema Used: Basic Schema
+Dataset Used: reviews_OriginalData.json
+Dataset Description: Dataset used in milestone 2

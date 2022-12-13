@@ -1,0 +1,3 @@
+Schema Used: Extended Schema
+Dataset Used: reviews_EmptyContent_with_EmptyKeywords.json
+Dataset Description: Dataset with extra features like: keywords and entities but entities are removed from review_content

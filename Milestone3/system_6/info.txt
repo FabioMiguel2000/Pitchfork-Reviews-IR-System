@@ -1,0 +1,3 @@
+Schema Used: Extended Schema with synonyms
+Dataset Used: reviews_CleanContent_with_CleanKeywords.json
+Dataset Description: Dataset with extra features like: keywords and entities but entities, title, artist are removed from review_content
