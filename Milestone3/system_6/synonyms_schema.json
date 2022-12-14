@@ -240,7 +240,7 @@
             "indexed": true
         },
         {
-            "name": "score",
+            "name": "rating_score",
             "type": "float",
             "indexed": true
         }

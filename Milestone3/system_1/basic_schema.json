@@ -23,7 +23,7 @@
     ],
     "add-field": [
         {
-            "name": "score",
+            "name": "rating_score",
             "type": "float",
             "indexed": true
         }

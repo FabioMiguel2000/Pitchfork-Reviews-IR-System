@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ../system_1/
+cd system_1/
 docker build . -t system_1
 docker run --name system_1 -p 8981:8983 -d system_1
 
