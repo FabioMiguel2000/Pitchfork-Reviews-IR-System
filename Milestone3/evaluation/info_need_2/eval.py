@@ -4,6 +4,7 @@ import numpy as np
 import json
 import requests
 import pandas as pd
+from sklearn.metrics import auc
 
 # METRICS TABLE
 # Define custom decorator to automatically calculate metric based on key
@@ -141,6 +142,8 @@ def precision_recall_curve(results, relevant, basic):
         ]
     precision_recall_match = {k: v for k,v in zip(recall_values, precision_values)}
 
+    auc_precision_recall = auc(recall_values, precision_values)
+    print(f'Area Under Curve: {auc_precision_recall}')
     # Extend recall_values to include traditional steps for a bett
     # er curve (0.1, 0.2 ...)
     recall_values.extend([step for step in np.arange(0.1, 1.1, 0.001) if step not in recall_values])

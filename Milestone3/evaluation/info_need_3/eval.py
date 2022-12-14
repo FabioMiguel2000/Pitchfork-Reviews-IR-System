@@ -144,7 +144,6 @@ def precision_recall_curve(results, relevant, basic):
 
     auc_precision_recall = auc(recall_values, precision_values)
     print(f'Area Under Curve: {auc_precision_recall}')
-
     # Extend recall_values to include traditional steps for a bett
     # er curve (0.1, 0.2 ...)
     recall_values.extend([step for step in np.arange(0.1, 1.1, 0.001) if step not in recall_values])
@@ -160,25 +159,30 @@ def precision_recall_curve(results, relevant, basic):
     y = [precision_recall_match.get(r) for r in recall_values]
     return recall_values, y
 
-# QUERY:
-# genre: jazz^2
-# review_content: calm
-# review_content: quiet
-# review_content: ambient
-# review_content: relaxing
-# review_content: "classical music"
-# review_content: "violent"
-# keywords: calm^1.5
-# keywords: quiet^1.5
-# keywords: relaxing^1.5
-# keywords: "classical music"^1.5
-# rating_score: [8.0 TO 10.0]
+# Information need:  I want to find reviews where the author praises the artist's voice
+# QUERY: 
+# review_content: ("I love voice"~5)^5
+# review_content: ("unique voice"~5)^5
+# review_content: "voice"^2
+# review_content: "vocal"^2
+# review_content: "I love"
+# review_content: "great"
+# review_content: "beautiful"
+# !review_content: "terrible"
+# !review_content: "bad"
+# !keywords: "terrible"
+# !keywords: "bad"
+# keywords: voice^4
+# keywords: unique^2
+# keywords: perfect^2
 
+# system 4 and 5 had really similar results
+# system 6 generated bad results, may be due to synonyms incorrect => should 
 
 
 # SYSTEM_1
 QRELS_FILE = "./qrels/system_1.txt"
-QUERY_URL = 'http://localhost:8981/solr/reviews/select?fl=score%20*&fq=rating_score%3A%20%5B8.0%20TO%2010.0%5D&indent=true&q.op=OR&q=genre%3A%20jazz%5E2%0Areview_content%3A%20calm%0Areview_content%3A%20quiet%0Areview_content%3A%20ambient%0Areview_content%3A%20relaxing%0Areview_content%3A%20%22classical%20music%22%0Areview_content%3A%20%22violent%22%0Akeywords%3A%20calm%5E3%0Akeywords%3A%20quiet%5E3%0Akeywords%3A%20relaxing%5E3%0Akeywords%3A%20%22classical%20music%22%5E3&rows=25'
+QUERY_URL = 'http://localhost:8981/solr/reviews/select?fl=score%20*&fq=author%3A%20mark%20richardson&indent=true&q.op=OR&q=review_content%3A%20(%22I%20love%20voice%22~5)%5E5%0Areview_content%3A%20(%22unique%20voice%22~5)%5E5%0Areview_content%3A%20%22voice%22%5E2%0Areview_content%3A%20%22vocal%22%5E2%0Areview_content%3A%20%22I%20love%22%0Areview_content%3A%20%22great%22%0Areview_content%3A%20%22beautiful%22%0A!review_content%3A%20%22terrible%22%0A!review_content%3A%20%22bad%22%0A!keywords%3A%20%22terrible%22%0A!keywords%3A%20%22bad%22%0Akeywords%3A%20voice%5E4%0Akeywords%3A%20unique%5E2%0Akeywords%3A%20perfect%5E2&rows=25'
 
 # Read qrels to extract relevant documents
 relevant_1 = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
@@ -187,7 +191,7 @@ results_1 = requests.get(QUERY_URL).json()['response']['docs']
 
 # SYSTEM_2
 QRELS_FILE = "./qrels/system_2.txt"
-QUERY_URL = 'http://localhost:8982/solr/reviews/select?fl=score%20*&fq=rating_score%3A%20%5B8.0%20TO%2010.0%5D&indent=true&q.op=OR&q=genre%3A%20jazz%5E2%0Areview_content%3A%20calm%0Areview_content%3A%20quiet%0Areview_content%3A%20ambient%0Areview_content%3A%20relaxing%0Areview_content%3A%20%22classical%20music%22%0Areview_content%3A%20%22violent%22%0Akeywords%3A%20calm%5E3%0Akeywords%3A%20quiet%5E3%0Akeywords%3A%20relaxing%5E3%0Akeywords%3A%20%22classical%20music%22%5E3&rows=25'
+QUERY_URL = 'http://localhost:8982/solr/reviews/select?fl=score%20*&fq=author%3A%20mark%20richardson&indent=true&q.op=OR&q=review_content%3A%20(%22I%20love%20voice%22~5)%5E5%0Areview_content%3A%20(%22unique%20voice%22~5)%5E5%0Areview_content%3A%20%22voice%22%5E2%0Areview_content%3A%20%22vocal%22%5E2%0Areview_content%3A%20%22I%20love%22%0Areview_content%3A%20%22great%22%0Areview_content%3A%20%22beautiful%22%0A!review_content%3A%20%22terrible%22%0A!review_content%3A%20%22bad%22%0A!keywords%3A%20%22terrible%22%0A!keywords%3A%20%22bad%22%0Akeywords%3A%20voice%5E4%0Akeywords%3A%20unique%5E2%0Akeywords%3A%20perfect%5E2&rows=25'
 
 # Read qrels to extract relevant documents
 relevant_2 = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
@@ -196,7 +200,7 @@ results_2 = requests.get(QUERY_URL).json()['response']['docs']
 
 # SYSTEM_3
 QRELS_FILE = "./qrels/system_3.txt"
-QUERY_URL = 'http://localhost:8983/solr/reviews/select?fl=score%20*&fq=rating_score%3A%20%5B8.0%20TO%2010.0%5D&indent=true&q.op=OR&q=genre%3A%20jazz%5E2%0Areview_content%3A%20calm%0Areview_content%3A%20quiet%0Areview_content%3A%20ambient%0Areview_content%3A%20relaxing%0Areview_content%3A%20%22classical%20music%22%0Areview_content%3A%20%22violent%22%0Akeywords%3A%20calm%5E3%0Akeywords%3A%20quiet%5E3%0Akeywords%3A%20relaxing%5E3%0Akeywords%3A%20%22classical%20music%22%5E3&rows=25'
+QUERY_URL = 'http://localhost:8983/solr/reviews/select?fl=score%20*&fq=author%3A%20mark%20richardson&indent=true&q.op=OR&q=review_content%3A%20(%22I%20love%20voice%22~5)%5E5%0Areview_content%3A%20(%22unique%20voice%22~5)%5E5%0Areview_content%3A%20%22voice%22%5E2%0Areview_content%3A%20%22vocal%22%5E2%0Areview_content%3A%20%22I%20love%22%0Areview_content%3A%20%22great%22%0Areview_content%3A%20%22beautiful%22%0A!review_content%3A%20%22terrible%22%0A!review_content%3A%20%22bad%22%0A!keywords%3A%20%22terrible%22%0A!keywords%3A%20%22bad%22%0Akeywords%3A%20voice%5E4%0Akeywords%3A%20unique%5E2%0Akeywords%3A%20perfect%5E2&rows=25'
 
 # Read qrels to extract relevant documents
 relevant_3 = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
@@ -205,7 +209,7 @@ results_3 = requests.get(QUERY_URL).json()['response']['docs']
 
 # SYSTEM_4
 QRELS_FILE = "./qrels/system_4.txt"
-QUERY_URL = 'http://localhost:8984/solr/reviews/select?fl=score%20*&fq=rating_score%3A%20%5B8.0%20TO%2010.0%5D&indent=true&q.op=OR&q=genre%3A%20jazz%5E2%0Areview_content%3A%20calm%0Areview_content%3A%20quiet%0Areview_content%3A%20ambient%0Areview_content%3A%20relaxing%0Areview_content%3A%20%22classical%20music%22%0Areview_content%3A%20%22violent%22%0Akeywords%3A%20calm%5E1.5%0Akeywords%3A%20quiet%5E1.5%0Akeywords%3A%20relaxing%5E1.5%0Akeywords%3A%20%22classical%20music%22%5E1.5&rows=25'
+QUERY_URL = 'http://localhost:8984/solr/reviews/select?fl=score%20*&fq=author%3A%20mark%20richardson&indent=true&q.op=OR&q=review_content%3A%20(%22I%20love%20voice%22~5)%5E5%0Areview_content%3A%20(%22unique%20voice%22~5)%5E5%0Areview_content%3A%20%22voice%22%5E2%0Areview_content%3A%20%22vocal%22%5E2%0Areview_content%3A%20%22I%20love%22%0Areview_content%3A%20%22great%22%0Areview_content%3A%20%22beautiful%22%0A!review_content%3A%20%22terrible%22%0A!review_content%3A%20%22bad%22%0A!keywords%3A%20%22terrible%22%0A!keywords%3A%20%22bad%22%0Akeywords%3A%20voice%5E4%0Akeywords%3A%20unique%5E2%0Akeywords%3A%20perfect%5E2&rows=25'
 
 # Read qrels to extract relevant documents
 relevant_4 = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
@@ -214,7 +218,7 @@ results_4 = requests.get(QUERY_URL).json()['response']['docs']
 
 # SYSTEM_5
 QRELS_FILE = "./qrels/system_5.txt"
-QUERY_URL = 'http://localhost:8985/solr/reviews/select?fl=score%20*&fq=rating_score%3A%20%5B8.0%20TO%2010.0%5D&indent=true&q.op=OR&q=genre%3A%20jazz%5E2%0Areview_content%3A%20calm%0Areview_content%3A%20quiet%0Areview_content%3A%20ambient%0Areview_content%3A%20relaxing%0Areview_content%3A%20%22classical%20music%22%0Areview_content%3A%20%22violent%22%0Akeywords%3A%20calm%5E1.5%0Akeywords%3A%20quiet%5E1.5%0Akeywords%3A%20relaxing%5E1.5%0Akeywords%3A%20%22classical%20music%22%5E1.5&rows=25'
+QUERY_URL = 'http://localhost:8985/solr/reviews/select?fl=score%20*&fq=author%3A%20mark%20richardson&indent=true&q.op=OR&q=review_content%3A%20(%22I%20love%20voice%22~5)%5E5%0Areview_content%3A%20(%22unique%20voice%22~5)%5E5%0Areview_content%3A%20%22voice%22%5E2%0Areview_content%3A%20%22vocal%22%5E2%0Areview_content%3A%20%22I%20love%22%0Areview_content%3A%20%22great%22%0Areview_content%3A%20%22beautiful%22%0A!review_content%3A%20%22terrible%22%0A!review_content%3A%20%22bad%22%0A!keywords%3A%20%22terrible%22%0A!keywords%3A%20%22bad%22%0Akeywords%3A%20voice%5E4%0Akeywords%3A%20unique%5E2%0Akeywords%3A%20perfect%5E2&rows=25'
 
 # Read qrels to extract relevant documents
 relevant_5 = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
@@ -223,7 +227,7 @@ results_5 = requests.get(QUERY_URL).json()['response']['docs']
 
 # SYSTEM_6
 QRELS_FILE = "./qrels/system_6.txt"
-QUERY_URL = 'http://localhost:8986/solr/reviews/select?fl=score%20*&fq=rating_score%3A%20%5B8.0%20TO%2010.0%5D&indent=true&q.op=OR&q=genre%3A%20jazz%5E2%0Areview_content%3A%20calm%0Areview_content%3A%20quiet%0Areview_content%3A%20ambient%0Areview_content%3A%20relaxing%0Areview_content%3A%20%22classical%20music%22%0Areview_content%3A%20%22violent%22%0Akeywords%3A%20calm%5E1.5%0Akeywords%3A%20quiet%5E1.5%0Akeywords%3A%20relaxing%5E1.5%0Akeywords%3A%20%22classical%20music%22%5E1.5&rows=25'
+QUERY_URL = 'http://localhost:8986/solr/reviews/select?fl=score%20*&fq=author%3A%20mark%20richardson&indent=true&q.op=OR&q=review_content%3A%20(%22I%20love%20voice%22~5)%5E5%0Areview_content%3A%20(%22unique%20voice%22~5)%5E5%0Areview_content%3A%20%22voice%22%5E2%0Areview_content%3A%20%22vocal%22%5E2%0Areview_content%3A%20%22I%20love%22%0Areview_content%3A%20%22great%22%0Areview_content%3A%20%22beautiful%22%0A!review_content%3A%20%22terrible%22%0A!review_content%3A%20%22bad%22%0A!keywords%3A%20%22terrible%22%0A!keywords%3A%20%22bad%22%0Akeywords%3A%20voice%5E4%0Akeywords%3A%20unique%5E2%0Akeywords%3A%20perfect%5E2&rows=25'
 
 # Read qrels to extract relevant documents
 relevant_6 = list(map(lambda el: el.strip(), open(QRELS_FILE).readlines()))
